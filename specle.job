@@ -1,0 +1,12 @@
+#!/bin/bash
+
+##SBATCH -p derevolutionibus
+#SBATCH -p scarf
+#SBATCH -n 1 
+#SBATCH -N 1
+#SBATCH -t 60:00:00
+#SBATCH -o %J.log
+#SBATCH -e %J.err
+
+mpirun -np 1 ./bin/specle ../examples/setup.spcl
+
