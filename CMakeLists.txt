@@ -14,7 +14,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(FFTW3_DIR /work4/scd/scarf1354/work/proj2/specle/)
-# set(FFTW3_DIR /work/c01/c01/terence411/work/specle/)
 
 find_package(MPI REQUIRED)
 

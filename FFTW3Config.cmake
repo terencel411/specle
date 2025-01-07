@@ -11,9 +11,6 @@ set (FFTW3_LIBRARIES fftw3)
 set (FFTW3_LIBRARY_DIRS /work4/scd/scarf1354/work/proj2/resources/lib)
 set (FFTW3_INCLUDE_DIRS /work4/scd/scarf1354/work/proj2/resources/include)
 
-# set (FFTW3_LIBRARY_DIRS /work4/scd/scarf1354/work/proj2/resources/lib)
-# set (FFTW3_INCLUDE_DIRS /work4/scd/scarf1354/work/proj2/resources/include)
-
 # set (FFTW3_LIBRARY_DIRS /home/vol07/scarf237/arch/amd/lib)
 # set (FFTW3_INCLUDE_DIRS /home/vol07/scarf237/arch/amd/include)
 
