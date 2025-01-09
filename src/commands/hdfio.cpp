@@ -61,9 +61,10 @@ void writeHdfTimelineCommand(TokenStream& tokens) {
 }
 
 void readHdfTimelineCommand(TokenStream& tokens) {
-    if (mpi_rank == 0) {
-        std::cout << "reading timeline from HDF5" << std::endl;
-    }
+    // if (mpi_rank == 0) {
+    //     std::cout << "reading timeline from HDF5" << std::endl;
+    // }
+    std::cout << "Rank "<<mpi_rank<<": reading timeline from HDF5" << std::endl;
     allocateTimelineData();
     readHdf5TimelineDataset(data);
 }
