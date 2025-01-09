@@ -71,18 +71,20 @@ void stepOmSGSpectrum() {
     // std::cout << "  delta " << om - sgSpectrumOm0 << std::endl;
     // std::cout << "  deltaNorm " << (om - sgSpectrumOm0) / sgSpectrumDOm << std::endl;
     intensity =  exp(-pow(double(om - sgSpectrumOm0)/sgSpectrumDOm, 2*sgSpectrumOrder));
-    if (mpi_rank == 0) {
-       std::cout << "intensity[" << om << "] = " << intensity << std::endl;
-    }
+    // if (mpi_rank == 0) {
+    //    std::cout << "intensity[" << om << "] = " << intensity << std::endl;
+    // }
+    std::cout <<"Rank "<<mpi_rank<<": intensity[" << om << "] = " << intensity << std::endl;
 }
 
 void stepOmRWSpectrum() {
     double dOm = (omMax - omMin) / double(NOm);
     double dPhase = 2*M_PI * rand() / double(RAND_MAX) * sqrt(dOm / spectrumCohBW);
     phase *= exp(ii * dPhase);
-    if (mpi_rank == 0) {
-        std::cout << "phase[" << om << "] = " << phase << std::endl;
-    }
+    // if (mpi_rank == 0) {
+    //     std::cout << "phase[" << om << "] = " << phase << std::endl;
+    // }
+    std::cout <<"Rank "<<mpi_rank<<": phase[" << om << "] = " << phase << std::endl;
 }
 
 void setSGSpectrumCommand(TokenStream& tokens) {
