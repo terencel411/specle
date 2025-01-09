@@ -53,10 +53,10 @@ void writeHdfCommand(TokenStream& tokens) {
 }
 
 void writeHdfTimelineCommand(TokenStream& tokens) {
-    if (mpi_rank == 0) {
-        std::cout << "writing timeline to HDF5" << std::endl;
-    }
-
+    // if (mpi_rank == 0) {
+    //     std::cout << "writing timeline to HDF5" << std::endl;
+    // }
+    std::cout << "Rank "<<mpi_rank<<": writing timeline to HDF5" << std::endl;
     writeHdf5TimelineDataset(data);
 }
 
@@ -70,17 +70,17 @@ void readHdfTimelineCommand(TokenStream& tokens) {
 }
 
 void closeHdfCommand(TokenStream& tokens) {
-    if (mpi_rank == 0) {
-        std::cout << "closing HDF file" << std::endl;
-    }
-
+    // if (mpi_rank == 0) {
+    //     std::cout << "closing HDF file" << std::endl;
+    // }
+    std::cout <<"Rank "<<mpi_rank<<": closing HDF file" << std::endl;
     closeHdf5File();
 }
 
 void closeHdfReadCommand(TokenStream& tokens) {
-    if (mpi_rank == 0) {
-        std::cout << "closing HDF file for reading" << std::endl;
-    }
-
+    // if (mpi_rank == 0) {
+    //     std::cout << "closing HDF file for reading" << std::endl;
+    // }
+    std::cout <<"Rank "<<mpi_rank<<": closing HDF file for reading" << std::endl;
     closeHdf5ReadFile();
 }

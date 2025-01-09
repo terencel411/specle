@@ -149,9 +149,10 @@ void mutateFocalFarField(TokenStream& tokens) {
 }
 
 void mutateOmToTime(TokenStream& tokens) {
-    if (mpi_rank == 0) {
-        std::cout << "Inverse Fourier transform: om -> time" << std::endl;
-    }
+    // if (mpi_rank == 0) {
+    //     std::cout <<"Inverse Fourier transform: om -> time" << std::endl;
+    // }
 
+    std::cout <<"Rank "<<mpi_rank<<": Inverse Fourier transform: om -> time" << std::endl;
     inverseFFTOm(data);
 }

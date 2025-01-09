@@ -358,15 +358,19 @@ void writeHdf5TimelineDataset(fftw_complex *data) {
  * The indices in the x and y dimensions are given by local_x_pos and local_y_pos.
  */
 void readHdf5TimelineDataset(fftw_complex *data) {
+    int rank;
+
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
     if (hdf5ReadFileId < 0 || hdf5ReadDxplId < 0) {
         throw std::runtime_error("HDF5 file has not been initialised");
     }
 
     hsize_t dims[3] = {1, 1, (hsize_t)NOm};
     hsize_t offset[3] = {(hsize_t)local_x_pos, (hsize_t)local_y_pos, 0};
-    std::cout << "Reading dataset at " << offset[0] << " " << offset[1] << " " << offset[2] << std::endl;
-    std::cout << "Dims: " << dims[0] << " " << dims[1] << " " << dims[2] << std::endl;
-    std::cout << "Selecting hyperslab" << std::endl;
+    std::cout <<"Rank "<<rank<<": Reading dataset at " << offset[0] << " " << offset[1] << " " << offset[2] << std::endl;
+    std::cout <<"Rank "<<rank<<": Dims: " << dims[0] << " " << dims[1] << " " << dims[2] << std::endl;
+    std::cout <<"Rank "<<rank<<": Selecting hyperslab" << std::endl;
     wrapErr(H5Sselect_hyperslab(hdfReadDataSpaceId, H5S_SELECT_SET, offset, NULL, dims, NULL));
 
     // std::cout << "Creating memspace" << std::endl;
@@ -374,15 +378,15 @@ void readHdf5TimelineDataset(fftw_complex *data) {
     hsize_t mem_select_dims[1] = {(hsize_t)NOm};
     hsize_t mem_offset[1] = {0};
     hsize_t mem_stride[1] = {2};
-    std::cout << "Creating memspace" << std::endl;
-    std::cout << "Mem dims: " << mem_dims[0] << std::endl;
-    std::cout << "Mem offset: " << mem_offset[0] << std::endl;
-    std::cout << "Mem stride: " << mem_stride[0] << std::endl;
+    std::cout <<"Rank "<<rank<<": Creating memspace" << std::endl;
+    std::cout <<"Rank "<<rank<<": Mem dims: " << mem_dims[0] << std::endl;
+    std::cout <<"Rank "<<rank<<": Mem offset: " << mem_offset[0] << std::endl;
+    std::cout <<"Rank "<<rank<<": Mem stride: " << mem_stride[0] << std::endl;
 
     hid_t memspace_id = wrapInvalid(H5Screate_simple(1, mem_dims, NULL));
     wrapErr(H5Sselect_hyperslab(memspace_id, H5S_SELECT_SET, mem_offset, mem_stride, mem_select_dims, NULL));
 
-    std::cout << "" << std::endl;
+    std::cout <<"Rank "<<rank<<": Reading real data" << std::endl;
     wrapErr(H5Dread(hdfReadDatasetRealId, H5T_NATIVE_DOUBLE, memspace_id, hdfReadDataSpaceId, hdf5ReadDxplId, data));
 
     mem_offset[0] = 1;
