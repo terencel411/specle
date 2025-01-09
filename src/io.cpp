@@ -201,6 +201,9 @@ void createHdf5File(std::string fname) {
     hdfDataSpaceId = wrapInvalid(H5Screate_simple(3, dims, NULL));
     hdfDatasetRealId = wrapInvalid(H5Dcreate2(hdf5FileId, "real", H5T_NATIVE_DOUBLE, hdfDataSpaceId, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT));
     hdfDatasetImagId = wrapInvalid(H5Dcreate2(hdf5FileId, "imag", H5T_NATIVE_DOUBLE, hdfDataSpaceId, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT));
+
+    // Label 1.1
+    // std::cout<<"File Created : " <<fname<<endl;
 }
 
 /**
@@ -270,6 +273,9 @@ void openHdf5File(std::string fname) {
 
     hsize_t dims[3] = {(hsize_t)N0, (hsize_t)N1, (hsize_t)NOm};
     hdfReadDataSpaceId = wrapInvalid(H5Screate_simple(3, dims, NULL));
+
+    // Label 1.1
+    // std::cout<<"File Opened : " <<fname<<endl;
 }
 
 
@@ -376,7 +382,7 @@ void readHdf5TimelineDataset(fftw_complex *data) {
     hid_t memspace_id = wrapInvalid(H5Screate_simple(1, mem_dims, NULL));
     wrapErr(H5Sselect_hyperslab(memspace_id, H5S_SELECT_SET, mem_offset, mem_stride, mem_select_dims, NULL));
 
-    std::cout << "Reading real data" << std::endl;
+    std::cout << "" << std::endl;
     wrapErr(H5Dread(hdfReadDatasetRealId, H5T_NATIVE_DOUBLE, memspace_id, hdfReadDataSpaceId, hdf5ReadDxplId, data));
 
     mem_offset[0] = 1;
