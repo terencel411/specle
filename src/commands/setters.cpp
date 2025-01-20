@@ -138,7 +138,7 @@ bool loopOmCommand(TokenStream& tokens) {
 }
 
 bool loopXYCommand(TokenStream& tokens) {
-    if (++local_xy_index < N0*N1) {
+    if ((local_xy_index+=2) < N0*N1) {
         updateLocalXYIndex();
         // if (mpi_rank == 0) {
         //     std::cout << "(x,y) = (" << local_xy_index << ", " << local_xy_index << ")" << std::endl;
