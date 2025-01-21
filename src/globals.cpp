@@ -36,7 +36,9 @@ hid_t hdfReadDatasetRealId = -1;
 hid_t hdfReadDatasetImagId = -1;
 hid_t hdfReadDataSpaceId = -1;
 
-int mpi_rank;
+int mpi_rank, mpi_size;
+
+int counter = 0;
 
 std::list<std::function<void()>> stepOmCommands;
 

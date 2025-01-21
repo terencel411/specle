@@ -156,7 +156,7 @@ void mutateOmToTime(TokenStream& tokens) {
     hsize_t offset[3] = {(hsize_t)local_x_pos, (hsize_t)local_y_pos, 0};
 
     // MPI_Barrier(MPI_COMM_WORLD);
-    std::cout << "Rank "<<mpi_rank<<": All Ranks have reached mutateOmToTime "<< offset[0] << " " << offset[1] << " " << offset[2] << std::endl;
+    // std::cout << "Rank "<<mpi_rank<<": All Ranks have reached mutateOmToTime "<< offset[0] << " " << offset[1] << " " << offset[2] << std::endl;
 
     std::cout <<"Rank "<<mpi_rank<<": Inverse Fourier transform: om -> time" << std::endl;
     inverseFFTOm(data);
