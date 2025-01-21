@@ -68,7 +68,7 @@ void writeHdfTimelineCommand(TokenStream& tokens) {
     writeHdf5TimelineDataset(data);
 
     // MPI_Barrier(MPI_COMM_WORLD);
-    std::cout << "Rank "<<mpi_rank<<": All Ranks have executed writeHdfTimelineCommand "<< offset[0] << " " << offset[1] << " " << offset[2] << std::endl;
+    // std::cout << "Rank "<<mpi_rank<<": All Ranks have executed writeHdfTimelineCommand "<< offset[0] << " " << offset[1] << " " << offset[2] << std::endl;
 }
 
 void readHdfTimelineCommand(TokenStream& tokens) {
@@ -90,7 +90,7 @@ void closeHdfCommand(TokenStream& tokens) {
     std::cout << "Rank "<<mpi_rank<<": All Ranks have reached closeHdfCommand" << std::endl;
 
     closeHdf5File();
-    std::cout << "Rank "<<mpi_rank<<": All Ranks have executed closeHdfCommand" << std::endl;
+    std::cout << "Rank "<<mpi_rank<<": HDF file has been closed" << std::endl;
 }
 
 void closeHdfReadCommand(TokenStream& tokens) {

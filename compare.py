@@ -15,13 +15,18 @@ def compare_h5_files(file1, file2):
     
     return True
 
-print("Current working directory:", os.getcwd())
+# print("Current working directory:", os.getcwd())
 
-filename1 = 'specle_data/intensity.h5'
-filename2 = 'specle_data/intensity1.h5'
+dir = os.getcwd() + '/proj2/specle_data/'
+print("Working directory:", dir)
 
-filename1 = 'specle_data/temporal.h5'
-filename2 = 'specle_data/temporal1.h5'
+# filename1 = dir + 'intensity1.h5'
+# filename2 = dir + 'intensity2.h5'
+# filename2 = dir + 'intensity4.h5'
+
+filename1 = dir + 'temporal1.h5'
+# filename2 = dir + 'temporal2.h5'
+filename2 = dir + 'temporal4.h5'
 
 # Example usage
 file1 = h5py.File(filename1, 'r')

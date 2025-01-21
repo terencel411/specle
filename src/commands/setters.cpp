@@ -138,7 +138,19 @@ bool loopOmCommand(TokenStream& tokens) {
 }
 
 bool loopXYCommand(TokenStream& tokens) {
-    if ((local_xy_index+=2) < N0*N1) {
+    if (local_xy_index < N0*N1) {
+        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (before)"<<std::endl;
+        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (before)" << std::endl;
+
+        // counter += 1;
+        local_xy_index += mpi_size;
+            
+        if (local_xy_index >= N0*N1){
+            local_xy_index = mpi_rank;
+            updateLocalXYIndex();
+            return false;
+        }
+
         updateLocalXYIndex();
         // if (mpi_rank == 0) {
         //     std::cout << "(x,y) = (" << local_xy_index << ", " << local_xy_index << ")" << std::endl;
@@ -146,10 +158,21 @@ bool loopXYCommand(TokenStream& tokens) {
         for (auto &cmd : stepOmCommands) {
             cmd();
         }
+
+        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (after)"<<std::endl;
+        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (after)" << std::endl;
+        // std::cout << "Rank "<<mpi_rank<<": Counter (1) : " <<counter << std::endl;
         return true;
     } else {
+        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (before) (else)"<<std::endl;
+        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (before) (else)"<< std::endl;
+
+        // counter += 1;
         local_xy_index = mpi_rank;
         updateLocalXYIndex();
+        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (after) (else)"<<std::endl;
+        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (after) (else)"<< std::endl;
+        // std::cout << "Rank "<<mpi_rank<<": Counter (2) : " <<counter << std::endl;
         return false;
     }
 }

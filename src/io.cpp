@@ -10,13 +10,13 @@ std::map<std::string, std::shared_ptr<Array2D>> dataStore;
 
 void wrapErr(herr_t err) {
     if (err < 0) {
-        std::cout<<"Rank "<<mpi_rank<<" : HDF5 error encountered in wrapErr" << std::endl;
+        std::cout<<"Rank "<<mpi_rank<<": HDF5 error encountered in wrapErr" << std::endl;
         throw std::runtime_error("HDF5 error");
     }
 }
 
 void wrapErr_dup(herr_t err, std::string funcname) {
-    std::cout<<"Rank "<<mpi_rank<<" : Function is "<<funcname<<" and error is " <<err<<std::endl;
+    std::cout<<"Rank "<<mpi_rank<<": Function is "<<funcname<<" and error is " <<err<<std::endl;
 
     if (err < 0) {
         std::cout<<"Rank "<<mpi_rank<<" : HDF5 error encountered in wrapErr" << std::endl;
@@ -370,11 +370,11 @@ void readHdf5TimelineDataset(fftw_complex *data) {
         throw std::runtime_error("HDF5 file has not been initialised");
     }
 
-    std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset - hdfDataSpaceId "<<hdfDataSpaceId<<std::endl;
-    std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset - hdfDatasetRealId "<<hdfDatasetRealId<<std::endl;
-    std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset - hdfDatasetImagId "<<hdfDatasetImagId<<std::endl;
-    std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset - hdf5FileId "<<hdf5FileId<<std::endl;
-    std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset - hdf5DxplId "<<hdf5DxplId<<std::endl;
+    // std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset - hdfDataSpaceId "<<hdfDataSpaceId<<std::endl;
+    // std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset - hdfDatasetRealId "<<hdfDatasetRealId<<std::endl;
+    // std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset - hdfDatasetImagId "<<hdfDatasetImagId<<std::endl;
+    // std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset - hdf5FileId "<<hdf5FileId<<std::endl;
+    // std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset - hdf5DxplId "<<hdf5DxplId<<std::endl;
 
     hsize_t dims[3] = {1, 1, (hsize_t)NOm};
     hsize_t offset[3] = {(hsize_t)local_x_pos, (hsize_t)local_y_pos, 0};
@@ -389,9 +389,12 @@ void readHdf5TimelineDataset(fftw_complex *data) {
     hsize_t mem_offset[1] = {0};
     hsize_t mem_stride[1] = {2};
     std::cout <<"Rank "<<rank<<": Creating memspace" << std::endl;
-    std::cout <<"Rank "<<rank<<": Mem dims: " << mem_dims[0] << std::endl;
-    std::cout <<"Rank "<<rank<<": Mem offset: " << mem_offset[0] << std::endl;
-    std::cout <<"Rank "<<rank<<": Mem stride: " << mem_stride[0] << std::endl;
+    std::cout <<"Rank "<<rank<<": Mem dims: " << mem_dims[0]    \
+                             <<" | Mem offset: "<<mem_offset[0] \
+                             <<" | Mem stride: "<<mem_stride[0] << std::endl;
+    // std::cout <<"Rank "<<rank<<": Mem dims: " << mem_dims[0] << std::endl;
+    // std::cout <<"Rank "<<rank<<": Mem offset: " << mem_offset[0] << std::endl;
+    // std::cout <<"Rank "<<rank<<": Mem stride: " << mem_stride[0] << std::endl;
 
     hid_t memspace_id = wrapInvalid(H5Screate_simple(1, mem_dims, NULL));
     wrapErr(H5Sselect_hyperslab(memspace_id, H5S_SELECT_SET, mem_offset, mem_stride, mem_select_dims, NULL));
@@ -405,26 +408,26 @@ void readHdf5TimelineDataset(fftw_complex *data) {
     H5Eprint(H5E_DEFAULT, stderr);
 
     // MPI_Barrier(MPI_COMM_WORLD);
-    std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset (1)"<<std::endl;
+    // std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset (1)"<<std::endl;
 
     mem_offset[0] = 1;
     wrapErr(H5Sselect_hyperslab(memspace_id, H5S_SELECT_SET, mem_offset, mem_stride, mem_select_dims, NULL));
 
     // MPI_Barrier(MPI_COMM_WORLD);
-    std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset (2)"<<std::endl;
+    // std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset (2)"<<std::endl;
 
     // std::cout << "Reading imag data" << std::endl;
     wrapErr(H5Dread(hdfReadDatasetImagId, H5T_NATIVE_DOUBLE, memspace_id, hdfReadDataSpaceId, hdf5ReadDxplId, data));
 
     // MPI_Barrier(MPI_COMM_WORLD);
-    std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset (3)"<<std::endl;
+    // std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset (3)"<<std::endl;
 
     // std::cout << "Data written" << std::endl;
     wrapErr(H5Sclose(memspace_id));
     // std::cout << "Memspace closed" << std::endl;
 
     // MPI_Barrier(MPI_COMM_WORLD);
-    std::cout << "Rank "<<mpi_rank<<": All Ranks have executed readHdf5TimelineDataset "<< offset[0] << " " << offset[1] << " " << offset[2] << std::endl;
+    std::cout << "Rank "<<mpi_rank<<": Exiting readHdf5TimelineDataset "<< offset[0] << " " << offset[1] << " " << offset[2] << std::endl;
 }
 
 void closeHdf5File() {
@@ -434,27 +437,26 @@ void closeHdf5File() {
 
     std::cout<<"Rank "<<rank<<": In closeHdf5File "<<mpi_rank<<std::endl;
 
-    std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDataSpaceId "<<hdfDataSpaceId<<std::endl;
-    std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDatasetRealId "<<hdfDatasetRealId<<std::endl;
-    std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDatasetImagId "<<hdfDatasetImagId<<std::endl;
-    std::cout<<"Rank "<<rank<<": closeHdf5File - hdf5FileId "<<hdf5FileId<<std::endl;
-    std::cout<<"Rank "<<rank<<": closeHdf5File - hdf5DxplId "<<hdf5DxplId<<std::endl;
+    // std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDataSpaceId "<<hdfDataSpaceId<<std::endl;
+    // std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDatasetRealId "<<hdfDatasetRealId<<std::endl;
+    // std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDatasetImagId "<<hdfDatasetImagId<<std::endl;
+    // std::cout<<"Rank "<<rank<<": closeHdf5File - hdf5FileId "<<hdf5FileId<<std::endl;
+    // std::cout<<"Rank "<<rank<<": closeHdf5File - hdf5DxplId "<<hdf5DxplId<<std::endl;
 
     wrapErr(H5Sclose(hdfDataSpaceId));
-    std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDataSpaceId - PASSED"<<std::endl;
-    wrapErr(H5Dclose(hdfDatasetRealId));
-    std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDatasetRealId - PASSED"<<std::endl;
-    wrapErr(H5Dclose(hdfDatasetImagId));
-    std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDatasetImagId - PASSED"<<std::endl;
+    // std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDataSpaceId - PASSED"<<std::endl;
 
-    wrapErr_dup(H5Fclose(hdf5FileId), "hdf5FileId");
-    std::cout<<"Rank "<<rank<<": closeHdf5File - hdf5FileId - PASSED"<<std::endl;
+    wrapErr(H5Dclose(hdfDatasetRealId));
+    // std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDatasetRealId - PASSED"<<std::endl;
+
+    wrapErr(H5Dclose(hdfDatasetImagId));
+    // std::cout<<"Rank "<<rank<<": closeHdf5File - hdfDatasetImagId - PASSED"<<std::endl;
+
+    wrapErr(H5Fclose(hdf5FileId));
+    // std::cout<<"Rank "<<rank<<": closeHdf5File - hdf5FileId - PASSED"<<std::endl;
 
     wrapErr(H5Pclose(hdf5DxplId));
-    std::cout<<"Rank "<<rank<<": closeHdf5File - hdf5DxplId - PASSED"<<std::endl;
-
-    // std::cout<<"Rank "<<rank<<": Vaue of H5Fclose(hdf5FileId) - "<<H5Fclose(hdf5FileId)<<std::endl;
-
+    // std::cout<<"Rank "<<rank<<": closeHdf5File - hdf5DxplId - PASSED"<<std::endl;
 
     std::cout << "Rank " << rank << ": Exiting closeHdf5File" << std::endl;
 }

@@ -1,14 +1,14 @@
-size 100 100
-domain 50
+size 200 200
+domain 100
 lambda 1e-3
 
-omSize 100
+omSize 200
 lambdaDomain 0.4e-6 0.95e-6
 sgspectrum 0.35e-6 1.0e-6 8
 rwphase 1.2
 
-createHDF intensity.h5d
-readAscii ../examples/isi_rnd_ex.dat isi
+createHDF intensity.h5
+readAscii ../examples/isi_rnd.dat isi
 
 do
   sgbeam 0 0 500 8
@@ -20,10 +20,13 @@ loopOm
 closeHDF
 
 openHDF intensity.h5
+createHDF temporal.h5
 
 do
   readTimeHDF
   omToTime
+  writeTimeHDF
 loopXY
 
+closeHDF
 closeHDFRead

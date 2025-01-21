@@ -8,7 +8,7 @@ sgspectrum 0.35e-6 1.0e-6 8
 rwphase 1.2
 
 createHDF intensity.h5
-readAscii ../examples/isi_rnd_ex.dat isi
+readAscii ../examples/isi_rnd.dat isi
 
 do
   sgbeam 0 0 500 8
