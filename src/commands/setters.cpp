@@ -159,19 +159,19 @@ bool loopXYCommand(TokenStream& tokens) {
             cmd();
         }
 
-        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (after)"<<std::endl;
-        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (after)" << std::endl;
+        // std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (after)"<<std::endl;
+        // std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (after)" << std::endl;
         // std::cout << "Rank "<<mpi_rank<<": Counter (1) : " <<counter << std::endl;
         return true;
     } else {
-        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (before) (else)"<<std::endl;
-        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (before) (else)"<< std::endl;
+        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (before) (2)"<<std::endl;
+        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (before) (2)"<< std::endl;
 
         // counter += 1;
         local_xy_index = mpi_rank;
         updateLocalXYIndex();
-        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (after) (else)"<<std::endl;
-        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (after) (else)"<< std::endl;
+        // std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (after) (2)"<<std::endl;
+        // std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (after) (2)"<< std::endl;
         // std::cout << "Rank "<<mpi_rank<<": Counter (2) : " <<counter << std::endl;
         return false;
     }
