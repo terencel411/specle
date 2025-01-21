@@ -403,9 +403,6 @@ void readHdf5TimelineDataset(fftw_complex *data) {
 
     std::cout <<"Rank "<<rank<<": Reading real data" << std::endl;
     wrapErr(H5Dread(hdfReadDatasetRealId, H5T_NATIVE_DOUBLE, memspace_id, hdfReadDataSpaceId, hdf5ReadDxplId, data));
-    
-    std::cerr << "HDF5 error encountered" << std::endl;
-    H5Eprint(H5E_DEFAULT, stderr);
 
     // MPI_Barrier(MPI_COMM_WORLD);
     // std::cout<<"Rank "<<rank<<": readHdf5TimelineDataset (1)"<<std::endl;
