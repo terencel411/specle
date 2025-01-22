@@ -25,8 +25,8 @@ print("Working directory:", dir)
 # filename2 = dir + 'intensity4.h5'
 
 filename1 = dir + 'temporal1.h5'
-# filename2 = dir + 'temporal2.h5'
-filename2 = dir + 'temporal4.h5'
+filename2 = dir + 'temporal2.h5'
+# filename2 = dir + 'temporal4.h5'
 
 # Example usage
 file1 = h5py.File(filename1, 'r')
