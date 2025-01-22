@@ -86,11 +86,11 @@ void closeHdfCommand(TokenStream& tokens) {
     // }
     std::cout <<"Rank "<<mpi_rank<<": closing HDF file" << std::endl;
 
-    MPI_Barrier(MPI_COMM_WORLD);
-    std::cout << "Rank "<<mpi_rank<<": All Ranks have reached closeHdfCommand" << std::endl;
+    // MPI_Barrier(MPI_COMM_WORLD);
+    // std::cout << "Rank "<<mpi_rank<<": All Ranks have reached closeHdfCommand" << std::endl;
 
     closeHdf5File();
-    std::cout << "Rank "<<mpi_rank<<": HDF file has been closed" << std::endl;
+    // std::cout << "Rank "<<mpi_rank<<": HDF file has been closed" << std::endl;
 }
 
 void closeHdfReadCommand(TokenStream& tokens) {
@@ -98,8 +98,8 @@ void closeHdfReadCommand(TokenStream& tokens) {
     //     std::cout << "closing HDF file for reading" << std::endl;
     // }
     std::cout <<"Rank "<<mpi_rank<<": closing HDF file for reading" << std::endl;
-    MPI_Barrier(MPI_COMM_WORLD);
-    std::cout <<"Rank "<<mpi_rank<<": closing HDF file for reading (after barrier)" << std::endl;
+    // MPI_Barrier(MPI_COMM_WORLD);
+    // std::cout <<"Rank "<<mpi_rank<<": closing HDF file for reading (after barrier)" << std::endl;
     closeHdf5ReadFile();
-    std::cout <<"Rank "<<mpi_rank<<": HDF file for reading has been closed" << std::endl;
+    // std::cout <<"Rank "<<mpi_rank<<": HDF file for reading has been closed" << std::endl;
 }

@@ -37,7 +37,6 @@ extern int local_x_pos, local_y_pos;
 extern int local_xy_index;
 
 extern int mpi_rank, mpi_size;
-extern int counter;
 
 extern hid_t hdf5FileId;
 extern hid_t hdf5DxplId;

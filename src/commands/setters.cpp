@@ -23,7 +23,7 @@ void setSizeCommand(TokenStream& tokens) {
 
 void setOmSizeCommand(TokenStream& tokens) {
     NOm = tokens.nextInt();
-    local_om_pos = 0;
+    local_om_pos = mpi_rank;
     if (mpi_rank == 0) {
         std::cout << "setting size in omega: " << NOm << std::endl;
     }
@@ -50,7 +50,12 @@ void setLambdaDomainCommand(TokenStream& tokens) {
 
     omMin = 2*M_PI*clight/lambdaMax;
     omMax = 2*M_PI*clight/lambdaMin;
+
     om = omMin;
+
+    // local_om_pos = mpi_rank;
+    // om = omMin + (omMax - omMin) * local_om_pos / double(NOm);
+
     if (mpi_rank == 0) {
         std::cout << "setting lambda domain: " << lambdaMin << " " << lambdaMax << std::endl;
         std::cout << "     => omega domain: " << omMin << " " << omMax << std::endl;
@@ -74,7 +79,8 @@ void stepOmSGSpectrum() {
     // if (mpi_rank == 0) {
     //    std::cout << "intensity[" << om << "] = " << intensity << std::endl;
     // }
-    std::cout <<"Rank "<<mpi_rank<<": intensity[" << om << "] = " << intensity << std::endl;
+    std::cout <<"Rank "<<mpi_rank<<": intensity[" << om << "] = " << intensity \
+              <<"| local_om_pos = "<<local_om_pos<< std::endl;
 }
 
 void stepOmRWSpectrum() {
@@ -84,7 +90,8 @@ void stepOmRWSpectrum() {
     // if (mpi_rank == 0) {
     //     std::cout << "phase[" << om << "] = " << phase << std::endl;
     // }
-    std::cout <<"Rank "<<mpi_rank<<": phase[" << om << "] = " << phase << std::endl;
+    std::cout <<"Rank "<<mpi_rank<<": phase[" << om << "] = " << phase \
+              <<"| local_om_pos = "<<local_om_pos<< std::endl;
 }
 
 void setSGSpectrumCommand(TokenStream& tokens) {
@@ -96,6 +103,7 @@ void setSGSpectrumCommand(TokenStream& tokens) {
     double sgOmMax = 2*M_PI*clight/lambdaMin;
     sgSpectrumOm0 = 0.5*(sgOmMin + sgOmMax);
     sgSpectrumDOm  = 0.5*(sgOmMax - sgOmMin);
+
     if (mpi_rank == 0) {
         std::cout << "setting SG spectrum: " << sgSpectrumOm0 << " " << sgSpectrumDOm << " " << sgSpectrumOrder << std::endl;
     }
@@ -113,10 +121,78 @@ void setRWSpectrumPhaseCommand(TokenStream& tokens) {
     stepOmCommands.push_back(stepOmRWSpectrum);
 }
 
-void initLoopOmCommand() {
-    local_om_pos = 0;
-    for (auto &cmd : stepOmCommands) {
-        cmd();
+// void initLoopOmCommand() {
+//     local_om_pos = mpi_rank;
+//     om = omMin + (omMax - omMin) * local_om_pos / double(NOm);
+
+//     for (auto &cmd : stepOmCommands) {
+//         cmd();
+//     }
+// }
+
+// bool loopOmCommand(TokenStream& tokens) {
+//     if (local_om_pos < NOm) {
+//         std::cout <<"Rank "<<mpi_rank<<": omega["<<local_om_pos<<"] = "<<om<<" (before)"<<std::endl;
+
+//         local_om_pos += mpi_size;
+
+//         om = omMin + (omMax - omMin) * local_om_pos / double(NOm);
+
+//         std::cout <<"Rank "<<mpi_rank<<": omega["<<local_om_pos<<"] = "<<om<<" (after)"<<std::endl;
+
+//         // if local_om_pos goes beyond NOm after incrementing
+//         // reset index and exit loopOm
+//         if (local_om_pos >= NOm) {
+//             local_om_pos = mpi_rank;
+//             om = omMin;
+//             return false;
+//         }
+
+//         for (auto &cmd : stepOmCommands) {
+//             cmd();
+//         }
+//         return true;
+//     } else {
+//         local_om_pos = mpi_rank;
+//         om = omMin;
+//         return false;
+//     }
+// }
+
+bool loopXYCommand(TokenStream& tokens) {
+    if (local_xy_index < N0*N1) {
+        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (before)"<<std::endl;
+        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (before)" << std::endl;
+
+        local_xy_index += mpi_size;
+            
+        // if local_xy_index goes beyond N0*N1 after incrementing
+        // reset index and exit loopXY
+        if (local_xy_index >= N0*N1){
+            local_xy_index = mpi_rank;
+            updateLocalXYIndex();
+            return false;
+        }
+
+        updateLocalXYIndex();
+
+        for (auto &cmd : stepOmCommands) {
+            cmd();
+        }
+
+        // std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (after)"<<std::endl;
+        // std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (after)" << std::endl;
+        return true;
+    } else {
+        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (before) (2)"<<std::endl;
+        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (before) (2)"<< std::endl;
+
+        // counter += 1;
+        local_xy_index = mpi_rank;
+        updateLocalXYIndex();
+        // std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (after) (2)"<<std::endl;
+        // std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (after) (2)"<< std::endl;
+        return false;
     }
 }
 
@@ -136,43 +212,20 @@ bool loopOmCommand(TokenStream& tokens) {
         return false;
     }
 }
-
-bool loopXYCommand(TokenStream& tokens) {
-    if (local_xy_index < N0*N1) {
-        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (before)"<<std::endl;
-        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (before)" << std::endl;
-
-        // counter += 1;
-        local_xy_index += mpi_size;
-            
-        if (local_xy_index >= N0*N1){
-            local_xy_index = mpi_rank;
-            updateLocalXYIndex();
-            return false;
-        }
-
-        updateLocalXYIndex();
-        // if (mpi_rank == 0) {
-        //     std::cout << "(x,y) = (" << local_xy_index << ", " << local_xy_index << ")" << std::endl;
-        // }
-        for (auto &cmd : stepOmCommands) {
-            cmd();
-        }
-
-        // std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (after)"<<std::endl;
-        // std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (after)" << std::endl;
-        // std::cout << "Rank "<<mpi_rank<<": Counter (1) : " <<counter << std::endl;
-        return true;
-    } else {
-        std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (before) (2)"<<std::endl;
-        std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (before) (2)"<< std::endl;
-
-        // counter += 1;
-        local_xy_index = mpi_rank;
-        updateLocalXYIndex();
-        // std::cout << "Rank "<<mpi_rank<<": local_xy_index => " << local_xy_index<<" (after) (2)"<<std::endl;
-        // std::cout << "Rank "<<mpi_rank<<": (x,y) = (" << local_x_pos << ", " << local_y_pos << ") (after) (2)"<< std::endl;
-        // std::cout << "Rank "<<mpi_rank<<": Counter (2) : " <<counter << std::endl;
-        return false;
-    }
-}
+// 
+// bool loopXYCommand(TokenStream& tokens) {
+//     if (++local_xy_index < N0*N1) {
+//         updateLocalXYIndex();
+//         // if (mpi_rank == 0) {
+//         //     std::cout << "(x,y) = (" << local_xy_index << ", " << local_xy_index << ")" << std::endl;
+//         // }
+//         for (auto &cmd : stepOmCommands) {
+//             cmd();
+//         }
+//         return true;
+//     } else {
+//         local_xy_index = mpi_rank;
+//         updateLocalXYIndex();
+//         return false;
+//     }
+// }

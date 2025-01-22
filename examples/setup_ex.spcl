@@ -1,8 +1,8 @@
-size 200 200
-domain 100
+size 100 100
+domain 50
 lambda 1e-3
 
-omSize 200
+omSize 100
 lambdaDomain 0.4e-6 0.95e-6
 sgspectrum 0.35e-6 1.0e-6 8
 rwphase 1.2

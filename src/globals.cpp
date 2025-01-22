@@ -38,8 +38,6 @@ hid_t hdfReadDataSpaceId = -1;
 
 int mpi_rank, mpi_size;
 
-int counter = 0;
-
 std::list<std::function<void()>> stepOmCommands;
 
 bool debugFlag = false;
